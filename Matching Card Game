@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Famous Paintings Match Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #ffeb99;
+        }
+        h1 {
+            color: #ff6600;
+        }
+        .game-container {
+            display: grid;
+            grid-template-columns: repeat(8, 100px);
+            grid-gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .card {
+            width: 100px;
+            height: 100px;
+            background: #ffcc66;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s, background 0.3s;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+        }
+        .card::before {
+            content: "✿❀✿";
+            font-size: 20px;
+            color: #ff6600;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .flipped {
+            background: none !important;
+        }
+        .flipped::before {
+            content: "";
+        }
+        #message {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #009900;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Famous Paintings Match Game!</h1>
+    <div class="game-container" id="gameBoard"></div>
+    <p id="message"></p>
+
+    <script>
+        const paintings = [
+            "monalisa.jpg", "starrynight.jpg", "scream.jpg", "persistenceofmemory.jpg",
+            "girlwithpearlearring.jpg", "birthofvenus.jpg", "thenightwatch.jpg", "waterlilies.jpg",
+            "sunflowers.jpg", "guernica.jpg", "american-gothic.jpg", "thekiss.jpg",
+            "liberty-leading.jpg", "lastsupper.jpg", "whistlermother.jpg", "olympia.jpg"
+        ];
+        let cards = [...paintings, ...paintings]; // 16 pairs = 32 cards
+        let flippedCards = [];
+        let matchedCards = [];
+
+        // Shuffle cards
+        cards.sort(() => Math.random() - 0.5);
+
+        const gameBoard = document.getElementById("gameBoard");
+
+        // Create card elements
+        cards.forEach((painting, index) => {
+            const card = document.createElement("div");
+            card.classList.add("card");
+            card.dataset.painting = painting;
+            card.dataset.index = index;
+            card.style.backgroundImage = 'url("back.jpg")'; // Card back
+            card.addEventListener("click", flipCard);
+            gameBoard.appendChild(card);
+        });
+
+        function flipCard() {
+            if (flippedCards.length < 2 && !this.classList.contains("flipped") && !matchedCards.includes(this)) {
+                this.style.backgroundImage = `url("${this.dataset.painting}")`; // Show painting
+                this.classList.add("flipped");
+                flippedCards.push(this);
+                
+                if (flippedCards.length === 2) {
+                    setTimeout(checkMatch, 1000);
+                }
+            }
+        }
+
+        function checkMatch() {
+            if (flippedCards[0].dataset.painting === flippedCards[1].dataset.painting) {
+                matchedCards.push(...flippedCards);
+                flippedCards = [];
+                if (matchedCards.length === cards.length) {
+                    document.getElementById("message").textContent = "🎉 You matched all the paintings! 🎉";
+                }
+            } else {
+                flippedCards.forEach(card => {
+                    card.style.backgroundImage = 'url("back.jpg")'; // Hide painting
+                    card.classList.remove("flipped");
+                });
+                flippedCards = [];
+            }
+        }
+    </script>
+
+</body>
+</html>
