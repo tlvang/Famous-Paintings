@@ -84,7 +84,7 @@
             card.classList.add("card");
             card.dataset.painting = painting;
             card.dataset.index = index;
-            card.style.backgroundImage = 'url("back.jpg")'; // Card back
+            card.style.backgroundImage = 'url("bluecard.jpg")'; // Card back
             card.addEventListener("click", flipCard);
             gameBoard.appendChild(card);
         });
